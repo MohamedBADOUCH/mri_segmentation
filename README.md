@@ -24,7 +24,7 @@ Les données proviennent de [kaggle](https://www.kaggle.com/datasets/awsaf49/bra
 
 ## Limites
 
-- L'application doit être lancée depuis google colab avec un GPU et un google drive associé : ceci ralentit le programme et empêche sa réutilisation par une autre personne. 
+- L'application doit être lancée depuis google colab (GPU) et un google drive associé : ceci ralentit le programme et empêche sa réutilisation par une autre personne. 
 - Le fichier .hdf5 qui contient les paramètres du modèle étant trop lourd, celui-ci ne peut pas être partagé sur github.
 
 ## Contributeurs
