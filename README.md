@@ -14,7 +14,7 @@ Ce projet a été réalisé dans le cadre du cours de programmation avancée du 
 
 ## Démo
 
-Coming soon...
+![](data/demo.gif)
 
 ## Structure
 
@@ -35,6 +35,9 @@ Les données proviennent de [kaggle](https://www.kaggle.com/datasets/awsaf49/bra
 - Mohamed BADOUCH : [@MohamedBADOUCH](https://github.com/MohamedBADOUCH)
 - Osman GULLU : [@croco13](https://github.com/croco13)
 
+## Sources et inspirations
 
+- [Preprocessing, Modèle et Training](https://github.com/bnsreenu/python_for_microscopists/tree/master/231_234_BraTa2020_Unet_segmentation) 
+- [Application Streamlit](https://github.com/medicimage/AI_med_seg_app)
 
 
