@@ -1,4 +1,4 @@
-import functions
+import matplotlib
 import numpy as np
 import streamlit as st
 import matplotlib.pyplot as plt
@@ -13,6 +13,83 @@ st.set_page_config(
     page_icon="🧠"
 )
 st.set_option('deprecation.showPyplotGlobalUse', False)
+
+def plotImage(img_vol, slice_i, channel):
+    selected_slice = img_vol[:, :, slice_i, channel]
+    ax.imshow(selected_slice, 'gray', interpolation='none')
+
+    return fig
+
+def plotImageSag(img_vol, slice_i, channel):
+    selected_slice3 = img_vol[:, slice_i, :, channel]
+
+    rotateIm = list(reversed(list(zip(*selected_slice3))))
+    ax2.imshow(rotateIm, 'gray', interpolation='none')
+
+    return fig2
+
+def plotImageCor(img_vol, slice_i, channel):
+    selected_slice2 = img_vol[slice_i, :, :, channel]
+    rotateIm = list(reversed(list(zip(*selected_slice2))))
+    ax1.imshow(rotateIm, 'gray', interpolation='none')
+
+    return fig1
+
+def plotMask(img_vol, slice_i):
+    selected_slice = img_vol[:, :, slice_i]
+    ax.imshow(selected_slice, interpolation='none')
+
+    return fig
+
+def plotMaskSag(img_vol, slice_i):
+    selected_slice = img_vol[:, slice_i, :]
+    rotateIm = list(reversed(list(zip(*selected_slice))))
+    ax2.imshow(rotateIm, interpolation='none')
+
+    return fig2
+
+def plotMaskCor(img_vol, slice_i):
+    selected_slice = img_vol[slice_i, :, :]
+    rotateIm = list(reversed(list(zip(*selected_slice))))
+    ax1.imshow(rotateIm, interpolation='none')
+
+    return fig1
+
+def plotRedMask(fig, ax, img, slice_i, view):
+
+    if view == 'AX':
+        tm90 = test_prediction_argmax[:, :, slice_i]
+        tm90[tm90 >= 1] = 1
+        masked = np.ma.masked_where(tm90 == 0, tm90)
+
+        cmapm = matplotlib.colors.ListedColormap(["red", "red", "red"], name='from_list', N=None)
+        ax.imshow(masked, cmap=cmapm, interpolation='none', alpha=0.3)
+        ax.contour(tm90, colors='red', linewidths=1.0)
+
+    if view == 'CR':
+        tm90 = test_prediction_argmax[slice_i, :, :]
+        tm90[tm90 >= 1] = 1
+        masked = np.ma.masked_where(tm90 == 0, tm90)
+
+        cmapm = matplotlib.colors.ListedColormap(["red", "red", "red"], name='from_list', N=None)
+        rotMasked = list(reversed(list(zip(*masked))))
+        ax.imshow(rotMasked, cmap=cmapm, interpolation='none', alpha=0.3)
+        rot_tm90 = list(reversed(list(zip(*tm90))))
+        ax.contour(rot_tm90, colors='red', linewidths=1.0)
+
+    if view == 'SG':
+        tm90 = test_prediction_argmax[:, slice_i, :]
+        tm90[tm90 >= 1] = 1
+        masked = np.ma.masked_where(tm90 == 0, tm90)
+
+        cmapm = matplotlib.colors.ListedColormap(["red", "red", "red"], name='from_list', N=None)
+        rotMasked = list(reversed(list(zip(*masked))))
+        ax.imshow(rotMasked, cmap=cmapm, interpolation='none', alpha=0.3)
+        rot_tm90 = list(reversed(list(zip(*tm90))))
+        ax.contour(rot_tm90, colors='red', linewidths=1.0)
+
+
+    return fig, ax
 
 # application // visualisation
 st.title("Visualisation IRM cérébrale")
@@ -46,15 +123,15 @@ if npy_file is not None:
     # plot
     fig, ax = plt.subplots()
     plt.axis('off')
-    fig = functions.plotImage(npy_file, slice_i1, channel)
+    fig = plotImage(npy_file, slice_i1, channel)
 
     fig1, ax1 = plt.subplots()
     plt.axis('off')
-    fig1 = functions.plotImageCor(npy_file, slice_i2, channel)
+    fig1 = plotImageCor(npy_file, slice_i2, channel)
 
     fig2, ax2 = plt.subplots()
     plt.axis('off')
-    fig2 = functions.plotImageSag(npy_file, slice_i3, channel)
+    fig2 = plotImageSag(npy_file, slice_i3, channel)
 
     plot = col1.pyplot(fig)
     plot = col2.pyplot(fig1)
@@ -74,9 +151,9 @@ if npy_file is not None:
         test_prediction_argmax = np.argmax(test_prediction, axis=4)[0,:,:,:]
 
 
-        fig, ax = functions.plotRedMask(fig, ax, npy_file, slice_i1, 'AX')
-        fig1, ax1 = functions.plotRedMask(fig1, ax1, npy_file, slice_i2, 'CR')
-        fig2, ax2 = functions.plotRedMask(fig2, ax2, npy_file, slice_i3, 'SG')
+        fig, ax = plotRedMask(fig, ax, npy_file, slice_i1, 'AX')
+        fig1, ax1 = plotRedMask(fig1, ax1, npy_file, slice_i2, 'CR')
+        fig2, ax2 = plotRedMask(fig2, ax2, npy_file, slice_i3, 'SG')
 
 
         plot = col1.pyplot(fig)
